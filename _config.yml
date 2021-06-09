@@ -20,9 +20,9 @@ permalink:           /:title
 plugins:             [jekyll-paginate, jekyll-sitemap, jekyll-feed, jekyll-seo-tag]
 
 # Customise atom feed settings (this is where Jekyll-Feed gets configuration information)
-title:		           'GSOC Log'
-description:	       'My GSOC Project Log'
-author:              'Jiyeon Lee'
+title:		           GSOC Log
+description:	       jiyeon's log
+author:              Jiyeon Lee
 
 # RSS 2.0 can be used instead of Atom by uncommenting following two lines
 #feed:
