@@ -6,6 +6,9 @@ permalink: /about
 
 ![img](https://www.embecosm.com/app/uploads/gsoc.png)
 
+![img](https://google.github.io/mediapipe/images/mediapipe_small.png)
+
+
 Hi! I'm [Jiyeon Lee](https://github.com/jiyeoon) from South Korea. 🇰🇷
 
 This blog is for recording my [GSOC(Google Summer of Code)](https://summerofcode.withgoogle.com/) project, which is **TFLite GPU inference latency estimator on mobile device.**
@@ -41,3 +44,87 @@ This project aims to solve this issue by building a tool for an offline model la
   - Week 12 (August 23-30) : mentors submit final evaluations
   - August 31 - Results are announced
 
+<br/>
+
+## Project Repository
+
+<https://github.com/jiyeoon/GSOC_proj>
+
+<br/>
+
+---
+
+## Part 0. Setting development environment
+
+- PC : MacOS BigSur 11.1
+- Mobile Device (used to measure latency) : Galaxy S6
+- anaconda virtual env (python 3.8)
+- Followed this [link](https://impjdi.blogspot.com/2020/05/compile-tensorflow-lite-on-mcos-catalina.html)
+
+
+<br/>
+
+## Part 1. Make a Database
+
+- In order to make latency estimator, For starters, It is needed to make a database for tranining.
+- Convolutions contained in the database
+  - Combination's of below's list
+    - kernel : [1, 2, 3, 5]
+    - filter : [16, 32, 64, 128, 256]
+    - input_h : [8, 16, 32, 64]
+    - input_w : [8, 16, 32, 64]
+    - input_channel : [16, 32, 48]
+    - stride : [1, 2, 3]
+  - From real model's convolution layer
+    - Densenet
+    - MobileNet
+    - Face detection
+    - hair segmentation
+  - Got each of one convloution's latency time. 
+- How to get latency time
+  - `run_bazel.py` code : <https://github.com/jiyeoon/GSOC_proj/blob/main/run_bazel.py>
+  - saved the result as a csv file format.
+- About 900 benchmarks from combinations + 230 samples from real model used for making database.
+
+
+<br/>
+
+## Part 2. Latency Estimator Modeling
+
+- How to get convolution paramer of one tflite model
+  - code : <https://github.com/jiyeoon/GSOC_proj/blob/main/gsoc_proj/get_conv_params.py>
+- 3 kinds of regressor are used
+  - XGBoost
+  - RandomForestRegressor
+  - DecisionTreeRegressor
+- Get Estimator Model using above database
+  - code : <https://github.com/jiyeoon/GSOC_proj/blob/main/gsoc_proj/get_estimator.py>
+- How to get estimated latency time from tflite model
+  - `estimator.py` : <https://github.com/jiyeoon/GSOC_proj/blob/main/estimator.py>
+  - How to use
+    - package install : `pip install -r requirements.txt`
+    - get result : `python -m estimator.py --path {TFLITE_MODEL_PATH}`
+
+
+<br/>
+
+## Result
+
+![img](assets/img/img.png)
+
+Output format is csv file like above.
+
+
+
+<br/>
+
+
+## What was challenging 
+
+- Getting convolution layer's parameter was the hardest thing to figure out.
+- Making Database
+  - It was hard to get enough of benchmarks.
+  - And also it was time-consuming operation because it is needed to get latency time directly for each convolution model.
+  
+
+<br/>
